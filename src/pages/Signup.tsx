@@ -1,7 +1,8 @@
+import { Button } from "@/components/ui/button"
 
 const Signup = () => {
   return (
-    <div>Signup</div>
+    <Button>Click me</Button>
   )
 }
 

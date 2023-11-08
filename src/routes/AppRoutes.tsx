@@ -9,7 +9,7 @@ const AppRoutes = () => {
   const router = createBrowserRouter(createRoutesFromElements(
     <>
       <Route element={<AuthLayout />}>
-        <Route path="sign-up" index element={<Signup />} />
+        <Route index path="sign-up" element={<Signup />} />
         <Route path="sign-in" element={<Signin />} />
       </Route>
       <Route element={<RootLayout/>}>
