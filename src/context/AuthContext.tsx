@@ -43,6 +43,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
 
   const checkAuthUser = async () => {
     try {
+      setIsLoading(true);
       const currentAccount = await getCurrentAccount();
       if(currentAccount) {
         const { $id, name, username, email, imageUrl, bio } = currentAccount;

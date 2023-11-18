@@ -1,15 +1,26 @@
-import * as z from "zod";
-import { useForm } from "react-hook-form";
+import { Link, useNavigate } from "react-router-dom";
 
+// components
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useNavigate } from "react-router-dom";
-import { createUserAccount, signInAccount } from "@/lib/appwrite/api";
 import { useToast } from "@/components/ui/use-toast"
+
+// zod and react hoot form
+import * as z from "zod";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+// appwrite
+import { createUserAccount, signInAccount } from "@/lib/appwrite/api";
+
+// react query
 import { useMutation } from "@tanstack/react-query";
+
+// types
 import { INewUser } from "@/types";
+
+// context
 import { useAuthContext } from "@/context/AuthContext";
 
 
@@ -26,10 +37,12 @@ const formSchema = z.object({
 
 const Signup = () => {
   const { mutateAsync: createUserAccountMutation, isPending: isCreatingUser } = useMutation({
+    mutationKey: ["signup"],
     mutationFn: (user: INewUser) => createUserAccount(user)
   })
 
-  const { mutateAsync: signInAccountMutation } = useMutation({
+  const { mutateAsync: signInAccountMutation, isPending: isSigningIn } = useMutation({
+    mutationKey: ["signin"],
     mutationFn: (user: { email: string; password: string; }) => signInAccount(user)
   })
 
@@ -130,8 +143,8 @@ const Signup = () => {
               </FormItem>
             )}
           />
-          <Button type="submit" className="shad-button_primary w-full" disabled={isCreatingUser}>
-            { isCreatingUser ? "Submiting..." : "Submit" }
+          <Button type="submit" className="shad-button_primary w-full" disabled={isCreatingUser || isSigningIn}>
+            { (isCreatingUser || isSigningIn) ? "Submiting..." : "Submit" }
           </Button>
           <p className="text-small-regular text-light-2 text-center mt-2">
             Already have an account?
