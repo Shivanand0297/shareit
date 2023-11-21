@@ -66,8 +66,6 @@ const Signin = () => {
     }
   }
 
-  form.getFieldState("email").error?.message
-
   return (
     <Form {...form}>
       <div className="sm:w-[420px] flex-center flex-col">

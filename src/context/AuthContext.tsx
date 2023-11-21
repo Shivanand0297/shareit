@@ -34,7 +34,7 @@ const AuthContextProvider = ({ children }: { children: ReactNode }) => {
       localStorage.getItem("cookieFallback") === "[]" || 
       localStorage.getItem("cookieFallback") === null
     ) {
-      navigate("/sign-in")
+      // navigate("/sign-in")
     }
     
     checkAuthUser()
