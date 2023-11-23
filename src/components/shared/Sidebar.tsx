@@ -1,14 +1,25 @@
-import { sidebarLinks } from "@/constants";
 import { useAuthContext } from "@/context/AuthContext";
 import { INavLink } from "@/types";
-import { Link, NavLink } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { Button } from "../ui/button";
+import { useSignOutMutation } from "@/lib/react-query/queriesAndMutations";
+import { useEffect } from "react";
+import { navLinks } from "@/constants";
 
 const Sidebar = () => {
+  const navigate = useNavigate();
+  const { mutate: handleLogout, isSuccess } = useSignOutMutation();
   const { user } = useAuthContext();
+
+  useEffect(() => {
+    if (isSuccess) {
+      navigate("/sign-in");
+    }
+  }, [isSuccess, navigate]);
 
   return (
     <nav className="leftsidebar">
-      <div className="flex flex-col gap-11">
+      <div className="flex flex-col gap-4">
         <Link to="/" className="flex gap-3 items-center">
           <img src="/assets/images/logo.svg" alt="logo" width={170} height={36} />
         </Link>
@@ -24,26 +35,34 @@ const Sidebar = () => {
           </div>
         </Link>
 
-        <ul className="flex flex-col gap-6">
-          {sidebarLinks.map((link: INavLink) => (
-              <li
-                key={link.label}
-                className={`leftsidebar-link group`}>
-                <NavLink
-                  to={link.route}
-                  className={({ isActive }) => `flex gap-4 items-center p-4 rounded-md ${isActive ? "bg-primary-500" : ""}`}>
-                  <img
-                    src={link.imgURL}
-                    alt={link.label}
-                    className={`group-hover:invert-white`}
-                  />
-                  {link.label}
-                </NavLink>
-              </li>
-            )
-          )}
+        <ul className="flex flex-col gap-4">
+          {navLinks.map((link: INavLink) => (
+            <li key={link.label} className={`leftsidebar-link group`}>
+              <NavLink
+                to={link.route}
+                className={({ isActive }) =>
+                  `flex gap-4 items-center p-3 rounded-md ${isActive ? "bg-primary-500" : ""}`
+                }
+              >
+                {({ isActive }) => (
+                  <>
+                    <img
+                      src={link.imgURL}
+                      alt={link.label}
+                      className={`group-hover:invert-white ${isActive ? "invert-white" : ""}`}
+                    />
+                    {link.label}
+                  </>
+                )}
+              </NavLink>
+            </li>
+          ))}
         </ul>
       </div>
+      <Button onClick={() => handleLogout()} className="shad-button_ghost p-3">
+        <img src="/assets/icons/logout.svg" alt="logout" />
+        <p className="small-medium lg:base-medium">Logout</p>
+      </Button>
     </nav>
   );
 };

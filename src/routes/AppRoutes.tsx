@@ -1,9 +1,9 @@
+import { Route, Routes } from "react-router-dom";
+import { AllUsers, CreatePost, Explore, Home, PostDetails, Posts, ProfileDetails, Saved, Signin, Signup, UpdatePost, UpdateProfile } from "@/pages";
+
 import AuthLayout from "@/components/AuthLayout";
 import RootLayout from "@/components/RootLayout";
-import Home from "@/pages/Home";
-import Signin from "@/pages/Signin";
-import Signup from "@/pages/Signup";
-import { Route, Routes } from "react-router-dom";
+
 
 const AppRoutes = () => {
   return (
@@ -16,11 +16,15 @@ const AppRoutes = () => {
       {/* private routes */}
       <Route path="/" element={<RootLayout />}>
         <Route index element={<Home />} />
-        <Route path="posts" element={<p>Posts</p>} />
-        <Route path="explore" element={<p>explore</p>} />
-        <Route path="all-users" element={<p>all-users</p>} />
-        <Route path="saved" element={<p>saved</p>} />
-        <Route path="create-post" element={<p>create-post</p>} />
+        <Route path="posts" element={<Posts/>} />
+        <Route path="explore" element={<Explore/>} />
+        <Route path="all-users" element={<AllUsers/>} />
+        <Route path="saved" element={<Saved/>} />
+        <Route path="create-post" element={<CreatePost/>} />
+        <Route path="update-post/:id" element={<UpdatePost/>} />
+        <Route path="posts/:id" element={<PostDetails/>} />
+        <Route path="profile/:id/*" element={<ProfileDetails/>} />
+        <Route path="update-profile/:id" element={<UpdateProfile/>} />
       </Route>
     </Routes>
   );
