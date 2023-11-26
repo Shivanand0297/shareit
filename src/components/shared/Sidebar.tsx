@@ -25,7 +25,7 @@ const Sidebar = () => {
         </Link>
         <Link to={`/profile/${user.id}`} className="flex gap-3 items-center">
           <img
-            src={user.imageUrl || "/assets/icons/profile-placeholder.png"}
+            src={user.imageUrl || "/assets/icons/profile-placeholder.svg"}
             alt="profile"
             className="h-10 w-10 rounded-full"
           />
