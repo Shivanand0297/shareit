@@ -54,6 +54,7 @@ export interface ISaveUserToDB {
   email: string; 
   imageUrl: URL; 
   username?: string;
+  name: string;
 }
 
 export interface IContextType {

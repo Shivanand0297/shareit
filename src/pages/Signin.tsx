@@ -15,12 +15,11 @@ import * as z from "zod";
 import { signInAccount } from "@/lib/appwrite/api";
 
 // react query
-import { useMutation } from "@tanstack/react-query";
-
-// types
+import { useMutation } from "@tanstack/react-query"
 
 // context
 import { useAuthContext } from "@/context/AuthContext";
+import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
 
 const formSchema = z.object({
@@ -33,7 +32,7 @@ const formSchema = z.object({
 const Signin = () => {
 
   const { mutateAsync: signInAccountMutation, isPending: isSigningIn } = useMutation({
-    mutationKey: ["signin"],
+    mutationKey: [QUERY_KEYS.SIGN_IN],
     mutationFn: (user: { email: string; password: string; }) => signInAccount(user)
   })
 

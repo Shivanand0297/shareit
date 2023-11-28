@@ -20,7 +20,8 @@ export const createUserAccount = async (user: INewUser) => {
       accountId: newAccount.$id, //id created on appwrite database
       email: newAccount.email,
       imageUrl: avatarUrl,
-      username: user.username
+      username: user.username,
+      name: user.name,
     })
 
     return newUser;
@@ -94,7 +95,7 @@ export const createPost = async (post : INewPost) => {
     }
 
     // getting file url
-    const filePreviewUrl = await getFilePreview(uploadFile.$id)
+    const filePreviewUrl = getFilePreview(uploadFile.$id)
 
     // deleting file if filePreviewUrl not Found
     if(!filePreviewUrl) {
@@ -156,7 +157,7 @@ export const deleteFile = async (fileId: string) => {
   }
 }
 
-export const getFilePreview = async (id: string) => {
+export const getFilePreview = (id: string) => {
   try {
     const filePreviewUrl = storage.getFilePreview(appwriteConfig.storageId, id, 2000, 2000, "top", 100);
     if (!filePreviewUrl) {
@@ -165,5 +166,87 @@ export const getFilePreview = async (id: string) => {
     return filePreviewUrl;
   } catch (error) {
     console.error(error);
+  }
+}
+
+
+export const getRecentPosts = async () => {
+  try {
+    const posts = await databases.listDocuments(
+      appwriteConfig.databaseId, 
+      appwriteConfig.postsCollectionId, 
+      [Query.orderDesc("$createdAt"), Query.limit(20)]
+    )
+
+    if(!posts) {
+      throw new Error("Post not found")
+    }
+    return posts;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const likePost = async (postId: string, likesArray: string[]) => {
+  try {
+    const savePost = await databases.updateDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.postsCollectionId,
+      postId,
+      {
+        likes: likesArray
+      }
+    );
+
+    if(!savePost) {
+      throw new Error("Post Not Liked!");
+    }
+
+    return savePost;
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const savePost = async (postId: string, userId: string) => {
+  try {
+    const updatePost = await databases.createDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.savesCollectionId,
+      ID.unique(),
+      {
+        user: userId,
+        post: postId
+      }
+    );
+
+    if(!updatePost) {
+      throw new Error("Post Not Saved!");
+    }
+
+    return updatePost;
+
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+export const deleteSavedPost = async (postId: string) => {
+  try {
+    const deleteSavedPost = await databases.deleteDocument(
+      appwriteConfig.databaseId,
+      appwriteConfig.savesCollectionId,
+      postId,
+    );
+
+    if(!deleteSavedPost) {
+      throw new Error("Saved Post Not Deleted !");
+    }
+
+    return { status: "ok"};
+
+  } catch (error) {
+    console.log(error);
   }
 }

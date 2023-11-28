@@ -22,6 +22,7 @@ import { INewUser } from "@/types";
 
 // context
 import { useAuthContext } from "@/context/AuthContext";
+import { QUERY_KEYS } from "@/lib/react-query/queryKeys";
 
 
 const formSchema = z.object({
@@ -37,12 +38,12 @@ const formSchema = z.object({
 
 const Signup = () => {
   const { mutateAsync: createUserAccountMutation, isPending: isCreatingUser } = useMutation({
-    mutationKey: ["signup"],
+    mutationKey: [QUERY_KEYS.CREATE_USER_ACCOUNT],
     mutationFn: (user: INewUser) => createUserAccount(user)
   })
 
   const { mutateAsync: signInAccountMutation, isPending: isSigningIn } = useMutation({
-    mutationKey: ["signin"],
+    mutationKey: [QUERY_KEYS.SIGN_IN],
     mutationFn: (user: { email: string; password: string; }) => signInAccount(user)
   })
 
