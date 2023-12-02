@@ -8,7 +8,7 @@ import { Button } from "../ui/button";
 import { useNavigate } from "react-router-dom";
 import { Textarea } from "../ui/textarea";
 import FileUpload from "./FileUpload";
-import { useCreatePostMutation } from "@/lib/react-query/queriesAndMutations";
+import { useCreatePostMutation, useUpdatePostById } from "@/lib/react-query/queriesAndMutations";
 import { useAuthContext } from "@/context/AuthContext";
 import { toast } from "../ui/use-toast";
 import Loader from "../shared/Loader";
@@ -26,10 +26,11 @@ const formSchema = z.object({
 });
 
 const PostForm = ({ action, post }: PostFormProps) => {
-
   const navigate = useNavigate()
-  const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePostMutation()
   const { user } = useAuthContext()
+
+  const { mutateAsync: createPost, isPending: isLoadingCreate } = useCreatePostMutation()
+  const { mutateAsync: updatePost, isPending: isUpdatePending } = useUpdatePostById();
 
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -42,13 +43,8 @@ const PostForm = ({ action, post }: PostFormProps) => {
     },
   });
 
-  async function onSubmit(values: z.infer<typeof formSchema>) {
-    const newPost = await createPost({
-      ...values,
-      userId: user.id
-    })
-
-    if (newPost) {
+  const showMessageToast = (isSuccess: boolean) => {
+    if (isSuccess) {
       toast({
         title: `Post ${action}d Successfuly.`,
       });
@@ -57,6 +53,29 @@ const PostForm = ({ action, post }: PostFormProps) => {
         title: `${action} post failed. Please try again.`,
       });
     }
+  }
+
+  async function onSubmit(values: z.infer<typeof formSchema>) {
+
+    if(action === "Update" && post?.$id) {
+      const updatedPost = await updatePost({
+        ...values, 
+        postId: post?.$id, 
+        imageId: post.imageId, 
+        imageUrl: post.imageUrl
+      })
+      
+      showMessageToast(!!updatedPost)
+      return navigate("/") 
+
+    }
+    
+    const newPost = await createPost({
+      ...values,
+      userId: user.id
+    })
+
+    showMessageToast(!!newPost)
 
     navigate("/")
   }
@@ -87,7 +106,7 @@ const PostForm = ({ action, post }: PostFormProps) => {
               <FormControl>
                 <FileUpload
                   fileChange={field.onChange}
-                  mediaUrl={post?.mediaUrl}
+                  imageUrl={post?.imageUrl}
                 />
               </FormControl>
               <FormMessage />
@@ -130,9 +149,9 @@ const PostForm = ({ action, post }: PostFormProps) => {
           <Button
             type="submit"
             className="shad-button_primary whitespace-nowrap"
-            disabled={isLoadingCreate}
+            disabled={isLoadingCreate || isUpdatePending}
           >
-            { isLoadingCreate && <Loader/>}
+            { (isLoadingCreate || isUpdatePending) && <Loader/>}
             {action} post
           </Button>
         </div>

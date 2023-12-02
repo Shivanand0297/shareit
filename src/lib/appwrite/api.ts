@@ -1,4 +1,4 @@
-import { INewPost, INewUser, ISaveUserToDB } from "@/types";
+import { INewPost, INewUser, ISaveUserToDB, IUpdatePost } from "@/types";
 import { account, appwriteConfig, avatars, databases, storage } from "./config";
 import { ID, Query } from "appwrite"
 
@@ -248,5 +248,98 @@ export const deleteSavedPost = async (postId: string) => {
 
   } catch (error) {
     console.log(error);
+  }
+}
+
+export const getPostById = async (postId: string) => {
+  try {
+    const post = await databases.getDocument(appwriteConfig.databaseId, appwriteConfig.postsCollectionId, postId)
+
+    if(!post) {
+      throw new Error(`Post not found for id: ${postId}`)
+    }
+
+    return post;
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+
+export const updatePostById = async (post : IUpdatePost) => {
+  const hasFileToUpdate = post.file.length > 0 ;
+
+  try {
+    let image = {
+      imageUrl: post.imageUrl,
+      imageId: post.imageId
+    }
+
+    if(hasFileToUpdate) {
+      // upload photo
+      const uploadFile = await uploadPhoto(post.file[0])
+  
+      if(!uploadFile) {
+        throw new Error("File not uploaded")
+      }
+  
+      // getting file url
+      const filePreviewUrl = getFilePreview(uploadFile.$id)
+  
+      // deleting file if filePreviewUrl not Found
+      if(!filePreviewUrl) {
+        await deleteFile(uploadFile.$id)
+        throw new Error("file preview not found")
+      }
+
+      image = {
+        ...image,
+        imageId: uploadFile.$id,
+        imageUrl: filePreviewUrl
+      }
+    }
+
+    // Convert tags into array
+    const tags = post.tags?.replace(/ /g, "").split(",") || [];
+
+    // updating post in database
+    const updatePost = {
+      caption: post.caption,
+      imageUrl: image.imageUrl,
+      imageId: image.imageId,
+      location: post.location,
+      tags: tags,
+    }
+
+    const updatedPost = await databases.updateDocument(
+      appwriteConfig.databaseId, 
+      appwriteConfig.postsCollectionId, 
+      post.postId, 
+      updatePost
+    )
+
+    if(!updatedPost) {
+      await deleteFile(post.imageId)
+      throw new Error("Post not updated")
+    }
+
+    return updatedPost;
+
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+export const deletePost = async (postId: string) => {
+  try {
+    const deletedPost = await databases.deleteDocument(appwriteConfig.databaseId, appwriteConfig.postsCollectionId, postId)
+
+    if(!deletedPost) {
+      throw new Error(`Sorry something went wrong`)
+    }
+
+    return deletedPost;
+  } catch (error) {
+    console.log(error)
   }
 }

@@ -42,13 +42,13 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
   const handleLikePost = (e: MouseEvent) => {
     e.stopPropagation();
 
-    let likesArray = [...likes];
+    let likesArray = [...likes]; // all the users who have liked the post
 
-    const hasLiked = likesArray.includes(userId);
+    const hasLiked = likesArray.includes(userId); // checking if the logged in user has liked the post or not
 
     // if clicking 2nd time
     if (hasLiked) {
-      likesArray = likesArray.filter((id) => id !== userId);
+      likesArray = likesArray.filter((id) => id !== userId); 
     } else {
       likesArray.push(userId);
     }
@@ -73,9 +73,7 @@ const PostStats = ({ post, userId }: PostStatsProps) => {
     
   };
 
-  const checkedIsLiked = (likes: string[], userId: string) => {
-    return likes.includes(userId)
-  }
+  const checkedIsLiked = (likes: string[], userId: string) => likes.includes(userId)
 
   return (
     <div className={`flex justify-between items-center z-20`}>

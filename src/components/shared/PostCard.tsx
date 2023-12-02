@@ -4,6 +4,7 @@ import { Models } from "appwrite";
 import { Link } from "react-router-dom";
 
 import profilePlaceHolderImg from "/assets/icons/profile-placeholder.svg";
+import edidIcon from "/assets/icons/edit.svg";
 import PostStats from "./PostStats";
 
 type PostCardProps = {
@@ -35,7 +36,7 @@ const PostCard = ({ post }: PostCardProps) => {
         </div>
 
         <Link to={`/update-post/${post.$id}`} className={`${user.id !== post.creator.$id && "hidden"}`}>
-          <img src={"/assets/icons/edit.svg"} alt="edit" width={20} height={20} />
+          <img src={edidIcon} alt="edit" width={20} height={20} />
         </Link>
       </div>
 

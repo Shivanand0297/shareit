@@ -1,26 +1,28 @@
 export enum QUERY_KEYS {
   // AUTH KEYS
-  CREATE_USER_ACCOUNT = "createUserAccount",
-  SIGN_OUT = "signOut",
-  SIGN_IN = "signIn",
+  CREATE_USER_ACCOUNT = "CREATE_USER_ACCOUNT",
+  SIGN_OUT = "SIGN_OUT",
+  SIGN_IN = "SIGN_IN",
 
   // USER KEYS
-  GET_CURRENT_USER = "getCurrentUser",
-  GET_USERS = "getUsers",
-  GET_USER_BY_ID = "getUserById",
+  GET_CURRENT_USER = "GET_CURRENT_USER",
+  GET_USERS = "GET_USERS",
+  GET_USER_BY_ID = "GET_USER_BY_ID",
 
   // POST KEYS
-  GET_POSTS = "getPosts",
-  GET_INFINITE_POSTS = "getInfinitePosts",
-  GET_RECENT_POSTS = "getRecentPosts",
-  GET_POST_BY_ID = "getPostById",
-  GET_USER_POSTS = "getUserPosts",
-  GET_FILE_PREVIEW = "getFilePreview",
-  CREATE_POST = "createPost",
-  LIKE_POST = "likePost",
-  SAVE_POST = "savePost",
-  DELETE_SAVE_POST = "deleteSavedPost",
+  GET_POSTS = "GET_POSTS",
+  GET_INFINITE_POSTS = "GET_INFINITE_POSTS",
+  GET_RECENT_POSTS = "GET_RECENT_POSTS",
+  GET_POST_BY_ID = "GET_POST_BY_ID",
+  GET_USER_POSTS = "GET_USER_POSTS",
+  GET_FILE_PREVIEW = "GET_FILE_PREVIEW",
+  CREATE_POST = "CREATE_POST",
+  EDIT_POST = "EDIT_POST",
+  LIKE_POST = "LIKE_POST",
+  SAVE_POST = "SAVE_POST",
+  DELETE_SAVE_POST = "DELETE_SAVE_POST",
+  DELETE_POST = "DELETE_POST",
 
   //  SEARCH KEYS
-  SEARCH_POSTS = "getSearchPosts",
+  SEARCH_POSTS = "SEARCH_POSTS",
 }
