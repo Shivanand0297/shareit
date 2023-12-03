@@ -251,8 +251,13 @@ export const deleteSavedPost = async (postId: string) => {
   }
 }
 
-export const getPostById = async (postId: string) => {
+export const getPostById = async (postId?: string) => {
   try {
+
+    if(!postId) {
+      return;
+    }
+
     const post = await databases.getDocument(appwriteConfig.databaseId, appwriteConfig.postsCollectionId, postId)
 
     if(!post) {
@@ -330,7 +335,7 @@ export const updatePostById = async (post : IUpdatePost) => {
   }
 }
 
-export const deletePost = async (postId: string) => {
+export const deletePost = async (postId: string, imageId: string) => {
   try {
     const deletedPost = await databases.deleteDocument(appwriteConfig.databaseId, appwriteConfig.postsCollectionId, postId)
 
@@ -338,8 +343,32 @@ export const deletePost = async (postId: string) => {
       throw new Error(`Sorry something went wrong`)
     }
 
-    return deletedPost;
+    const deletedImage = await storage.deleteFile(appwriteConfig.storageId, imageId)
+
+    if(!deletedImage) {
+      throw new Error(`Sorry something went wrong while deleting image`)
+    }
+
+    return { status: "ok"};
   } catch (error) {
     console.log(error)
+  }
+}
+
+export const getUserPosts = async (userId?: string) => {
+  if (!userId) return;
+
+  try {
+    const post = await databases.listDocuments(
+      appwriteConfig.databaseId,
+      appwriteConfig.postsCollectionId,
+      [Query.equal("creator", userId), Query.orderDesc("$createdAt")]
+    );
+
+    if (!post) throw Error;
+
+    return post;
+  } catch (error) {
+    console.log(error);
   }
 }
