@@ -372,3 +372,37 @@ export const getUserPosts = async (userId?: string) => {
     console.log(error);
   }
 }
+
+export const getInfinitePosts = async ({ pageParam }: { pageParam: number }) => {
+  const queries: string[] = [Query.orderDesc("$updatedAt"), Query.limit(9)];
+
+  if (pageParam) {
+    queries.push(Query.cursorAfter(pageParam.toString()));
+  }
+
+  try {
+    const posts = await databases.listDocuments(appwriteConfig.databaseId, appwriteConfig.postsCollectionId, queries);
+
+    if (!posts) throw Error;
+
+    return posts;
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getSearchPost = async (searchTerm: string) => {
+  try {
+    const searchedPost = await databases.listDocuments(
+      appwriteConfig.databaseId, 
+      appwriteConfig.postsCollectionId, 
+      [Query.search("caption", searchTerm)]
+    )
+    if(!searchedPost) {
+      throw new Error("Error Getting Searched Post")
+    }
+    return searchedPost;
+  } catch (error) {
+    console.log(error)
+  }
+}
